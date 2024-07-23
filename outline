@@ -1,13 +1,39 @@
 /*
-If the variable "RenewalID" is declared without the static modifier, the sql command passed the value 0 to the stored procedure,
-but the "RenewalID" text box displays the 
+The EnterRetailerID method processes a "Retailer ID" entered in an asp TextBox.
+
+
+
+If the variable "RenewalID" is declared without the static modifier, the SqlCommand "GenerateRenewalSql" passes the value 0 to the stored procedure,
+but the TextBox "RenewalID" text box displays RenewalID that was entered in the 
 */
 
 
 public partial class RenewalCreation : System.Web.UI.Page
 {
+	private int RenewalID;
+	private static int RetailerIDintConfirmed;
 
-	public int RenewalID;
+
+    protected void EnterRetailerID(object sender, EventArgs e)
+    {
+		int.TryParse(RetailerIDIn.Text, out RetailerIDintConfirmed);
+
+		ReturnRenewalInfo(RetailerIDintConfirmed);
+    }
+
+
+    protected void ReturnRenewalInfo(int RetailerIDIn)
+    {
+        SqlCommand GetRenewalID = new SqlCommand("[dbo].[usp_Packet_GenerateOnDemand_RenewalID]", SqlConnection01)
+        { CommandType = CommandType.StoredProcedure };
+        GetRenewalID.Parameters.Add(new SqlParameter("RetailerID", SqlDbType.Int));
+        GetRenewalID.Parameters[0].Value = RetailerIDIn;
+
+        SqlConnection01.Open();
+			RenewalID = (int)GetRenewalID.ExecuteScalar();
+        SqlConnection01.Close();
+    }
+
 
 	protected void GenerateRenewal(object sender, EventArgs e)
 	{ 
