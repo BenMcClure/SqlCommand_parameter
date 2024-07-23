@@ -1,0 +1,25 @@
+/*
+If the variable "RenewalID" is declared without the static modifier, the sql command passed the value 0 to the stored procedure,
+but the "RenewalID" text box displays the 
+*/
+
+
+public partial class RenewalCreation : System.Web.UI.Page
+{
+
+	public int RenewalID;
+
+	protected void GenerateRenewal(object sender, EventArgs e)
+	{ 
+		SqlCommand GenerateRenewalSql = new SqlCommand("[PacketInsert]", SqlConnection01)
+		{ CommandType = CommandType.StoredProcedure };
+		GenerateNewRenewal.Parameters.Add(new SqlParameter("RenewalID", SqlDbType.Int));
+		GenerateNewRenewal.Parameters[0].Value = RenewalID;
+
+		SqlConnection01.Open();
+			GenerateRenewalSql.ExecuteNonQuery();
+		SqlConnection01.Close();
+
+		RenewalID.Text = "A new Renewal for Renewal ID " + RenewalID + " has been generated.";
+	}
+}
